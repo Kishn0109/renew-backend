@@ -4,6 +4,7 @@ import { User as MongoUser, UserDocument } from './schemas/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
+import { CreateUserDto } from './dto/create-user.dto';
 @Injectable()
 export class userService {
   constructor(
@@ -31,7 +32,7 @@ export class userService {
     return user;
   }
 
-  async create(user: User): Promise<User> {
+  async create(user: CreateUserDto): Promise<User> {
     const { name, email, password } = user;
 
     // Check if user already exists
