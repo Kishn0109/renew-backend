@@ -7,11 +7,9 @@ import { JwtService } from '@nestjs/jwt';
 import { userService } from 'src/user/user.service';
 import * as bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
-import {
-  ForgotPasswordDto,
-  ResetPasswordDto,
-} from 'src/user/dto/forgot-password.dto';
 import { MailService } from 'src/mail/mail.service';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 @Injectable()
 export class AuthService {
   constructor(

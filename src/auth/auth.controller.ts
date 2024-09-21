@@ -9,10 +9,8 @@ import {
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 import { Public } from './constants';
-import {
-  ForgotPasswordDto,
-  ResetPasswordDto,
-} from 'src/user/dto/forgot-password.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('auth')
 export class AuthController {

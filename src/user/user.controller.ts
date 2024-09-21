@@ -1,8 +1,7 @@
-import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { userService } from './user.service';
 import { User } from './user.interface';
 import { Public } from 'src/auth/constants';
-import { ForgotPasswordDto, ResetPasswordDto } from './dto/forgot-password.dto';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: userService) {}
