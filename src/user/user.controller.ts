@@ -4,7 +4,9 @@ import { User } from './user.interface';
 import { Public } from 'src/auth/constants';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserDto } from './dto/user.dto';
-import { ApiExtraModels, ApiOkResponse } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+
+@ApiTags('Users')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: userService) {}
