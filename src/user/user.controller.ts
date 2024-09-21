@@ -17,20 +17,4 @@ export class UserController {
   async create(@Body() user: User): Promise<User> {
     return this.userService.create(user);
   }
-  @Public()
-  @Post('forgot-password')
-  async forgotPassword(
-    @Body() forgotPasswordDto: ForgotPasswordDto,
-  ): Promise<void> {
-    return this.userService.requestPasswordReset(forgotPasswordDto);
-  }
-
-  @Public()
-  @Post('reset-password')
-  @Post('reset-password')
-  async resetPassword(
-    @Body() resetPasswordDto: ResetPasswordDto,
-  ): Promise<void> {
-    return this.userService.resetPassword(resetPasswordDto);
-  }
 }
