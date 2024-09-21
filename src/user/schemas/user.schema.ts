@@ -15,6 +15,10 @@ export class User {
   password: string;
   @Prop({ default: Date.now })
   createdAt: Date;
+  @Prop()
+  resetPasswordExpires: number;
+  @Prop({ required: false, default: undefined })
+  resetPasswordToken: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
