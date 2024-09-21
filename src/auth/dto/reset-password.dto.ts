@@ -11,7 +11,7 @@ export class ResetPasswordDto {
     description: 'The new password to be set.',
     example: 'newStrongPassword123!',
   })
-  readonly newPassword: string;
+  readonly password: string;
 
   @ApiProperty({
     description: 'The email associated with the account.',

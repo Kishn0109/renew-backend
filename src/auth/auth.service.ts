@@ -37,7 +37,7 @@ export class AuthService {
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<void> {
-    const { token, email, newPassword } = resetPasswordDto;
+    const { token, email, password } = resetPasswordDto;
 
     // Find user with the provided reset token
     const user = await this.usersService.findOneByQuery(email);
@@ -51,7 +51,7 @@ export class AuthService {
     }
 
     // Hash the new password
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Update the user's password and clear the reset token fields
     user.password = hashedPassword;
