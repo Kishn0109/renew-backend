@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UserDto } from './dto/user.dto';
 @Injectable()
 export class userService {
   constructor(
@@ -52,6 +53,10 @@ export class userService {
     await newUser.save();
     return;
   }
+  async find(id: any): Promise<UserDto> {
+    const user = await this.userModel.findOne({ _id: id }).lean<UserDto>();
+    return user;
+  }
   async update(user: User): Promise<User> {
     const { email, ...res } = user;
     const updatedUser = await this.userModel
@@ -59,6 +64,8 @@ export class userService {
       .lean<User>();
     return updatedUser;
   }
-
+  async delete(id: any): Promise<void> {
+    await this.userModel.findByIdAndDelete(id);
+  }
   // Request Password Reset
 }
