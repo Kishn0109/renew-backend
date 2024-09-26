@@ -5,6 +5,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { userService } from './user.service';
@@ -14,11 +15,18 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserDto } from './dto/user.dto';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { GetUserDto } from './dto/get-user.dto';
+import { UpdateUserDto, UpdateUserParamsDto } from './dto/update-user.dto';
+import { MailService } from 'src/mail/mail.service';
+import { JwtService } from '@nestjs/jwt';
 
 @ApiTags('Users')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: userService) {}
+  constructor(
+    private readonly userService: userService,
+    private mailService: MailService,
+    private jwtService: JwtService,
+  ) {}
 
   @Public()
   @Get()
@@ -38,6 +46,39 @@ export class UserController {
   })
   async findOne(@Param() params: GetUserDto): Promise<UserDto> {
     return this.userService.find(params.id);
+  }
+  @Public()
+  @Patch(':id')
+  @ApiOkResponse({
+    description: 'Successfully updated user.',
+  })
+  async update(
+    @Param() params: UpdateUserParamsDto,
+    @Body() body: UpdateUserDto,
+  ): Promise<string[]> {
+    try {
+      let message = [];
+      const user = await this.userService.find(params.id);
+      if (!user) {
+        throw new BadRequestException('User not found');
+      }
+      if (body.name) {
+        await this.userService.updateById(params.id, body);
+        message.push('Name updated successfully');
+      }
+      if (body.email) {
+        const payload = { sub: body.email, id: params.id };
+        const token = await this.jwtService.signAsync(payload, {
+          expiresIn: '1d',
+          jwtid: 'email-verification',
+        });
+        this.mailService.sendEmailVerificationMail(body.email, token);
+        message.push('Verification email sent successfully');
+      }
+      return message;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Public()

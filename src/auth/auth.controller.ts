@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -14,6 +15,7 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { UserDto } from 'src/user/dto/user.dto';
 import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './dto/login-.dto';
+import { VerifyToken } from './dto/verify-token.dto';
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
@@ -36,6 +38,19 @@ export class AuthController {
   @Get('profile')
   getProfile(@Request() req) {
     return this.authService.getUser(req.user.email);
+  }
+
+  @Public()
+  @Post('verify-email')
+  async verifyEmailToken(@Body() { token }: VerifyToken): Promise<void> {
+    try {
+      const { id, sub } = await this.authService.verifyEmail(token);
+      const payload = await this.authService.updateEmail(id, sub);
+      console.log(payload, 'payload');
+      return;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Public()

@@ -6,6 +6,8 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserDto } from './dto/user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { select } from './user.constant';
 @Injectable()
 export class userService {
   constructor(
@@ -28,7 +30,7 @@ export class userService {
   async findOneWithoutPass(email: string): Promise<User | undefined> {
     const user = await this.userModel
       .findOne({ email })
-      .select('-_id -__v -password')
+      .select(select)
       .lean<User>();
     return user;
   }
@@ -64,8 +66,15 @@ export class userService {
       .lean<User>();
     return updatedUser;
   }
+  async updateById(id: string, user: UpdateUserDto): Promise<User> {
+    const { ...res } = user;
+    const updatedUser = await this.userModel
+      .findOneAndUpdate({ _id: id }, { ...res }, { new: true })
+      .select(select)
+      .lean<User>();
+    return updatedUser;
+  }
   async delete(id: any): Promise<void> {
     await this.userModel.findByIdAndDelete(id);
   }
-  // Request Password Reset
 }

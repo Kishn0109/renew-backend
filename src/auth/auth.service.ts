@@ -10,6 +10,7 @@ import * as crypto from 'crypto';
 import { MailService } from 'src/mail/mail.service';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { jwtConstants } from './constants';
 @Injectable()
 export class AuthService {
   constructor(
@@ -20,8 +21,22 @@ export class AuthService {
   async signIn(email: string, password: string): Promise<any> {
     const payload = { sub: email, username: password };
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      access_token: await this.jwtService.signAsync(payload, {
+        expiresIn: '7d',
+      }),
     };
+  }
+
+  async verifyEmail(token: string): Promise<any> {
+    try {
+      const payload = await this.jwtService.verify(token, {
+        secret: jwtConstants.secret,
+        jwtid: 'email-verification',
+      });
+      return payload;
+    } catch (error) {
+      throw new UnauthorizedException(error);
+    }
   }
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.usersService.findOne(email);
@@ -34,6 +49,9 @@ export class AuthService {
   }
   async getUser(email: string): Promise<any> {
     return await this.usersService.findOneWithoutPass(email);
+  }
+  async updateEmail(id: string, email: string): Promise<any> {
+    return await this.usersService.updateById(id, { email });
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<void> {

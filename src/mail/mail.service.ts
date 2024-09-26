@@ -29,4 +29,18 @@ export class MailService {
 
     await this.transporter.sendMail(mailOptions);
   }
+  async sendEmailVerificationMail(email: string, token: string): Promise<void> {
+    const mailOptions = {
+      from: 'kishan.lr@codemonk.io',
+      to: email,
+      subject: 'Verify Email Request',
+      html: `
+        <h1>Verify Email</h1>
+        <p>You requested a Verify Email. by clicking on the link below:</p>
+        <a href="${token}">verify email</a>
+      `,
+    };
+
+    await this.transporter.sendMail(mailOptions);
+  }
 }
